@@ -10,7 +10,15 @@ def get_word_list(file_name):
     returns a list of the words used in the book as a list.
     All words are converted to lower case.
     """
-    pass
+    raw_text = open(file_name, 'r')
+    lines = raw_text.readlines()
+    curr_line = 0
+    while lines[curr_line].find('START OF THIS PROJECT GUTENBERG EBOOK') == -1:
+        curr_line += 1
+    all_text = lines[curr_line+1:]
+    stripped_words = ["".join(c for c in word if c not in string.punctuation) for word in
+                      [val for sublist in [line.split() for line in all_text] for val in sublist]]
+    return stripped_words
 
 
 def get_top_n_words(word_list, n):
@@ -23,8 +31,11 @@ def get_top_n_words(word_list, n):
     returns: a list of n most frequently occurring words ordered from most
     frequently to least frequentlyoccurring
     """
-    pass
+    word_dict = {i: word_list.count(i) for i in set(word_list)}
+    sorted_words = list(sorted(word_dict, key=word_dict.get, reverse=True))
+    [print("Word: {}\t Frequency: {}".format(sorted_words[idx], word_dict[sorted_words[idx]])) for idx in range(n)]
+
 
 if __name__ == "__main__":
-    print("Running WordFrequency Toolbox")
-    print(string.punctuation)
+    words = get_word_list("pg84.txt")
+    get_top_n_words(words, 100)
